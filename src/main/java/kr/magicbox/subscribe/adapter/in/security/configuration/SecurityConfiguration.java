@@ -3,6 +3,7 @@ package kr.magicbox.subscribe.adapter.in.security.configuration;
 import kr.magicbox.subscribe.adapter.in.security.filter.UserInfoExtractFilter;
 import kr.magicbox.subscribe.adapter.in.security.properties.TrustedIpProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +18,7 @@ import org.springframework.web.filter.ForwardedHeaderFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableConfigurationProperties(TrustedIpProperties.class)
 @RequiredArgsConstructor
 public class SecurityConfiguration {
     private final TrustedIpProperties trustedIpProperties;
