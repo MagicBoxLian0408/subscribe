@@ -1,7 +1,6 @@
 package kr.magicbox.subscribe.adapter.in.security.configuration;
 
 import kr.magicbox.subscribe.adapter.in.security.filter.UserInfoExtractFilter;
-import kr.magicbox.subscribe.adapter.in.security.properties.TrustedIpProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +16,7 @@ import org.springframework.web.filter.ForwardedHeaderFilter;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfiguration {
-    private final TrustedIpProperties trustedIpProperties;
 
     @Bean
     public ForwardedHeaderFilter forwardedHeaderFilter() {
@@ -36,7 +33,7 @@ public class SecurityConfiguration {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new UserInfoExtractFilter(trustedIpProperties), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new UserInfoExtractFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .build();
     }
