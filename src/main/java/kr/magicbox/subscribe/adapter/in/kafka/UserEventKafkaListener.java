@@ -7,14 +7,12 @@ import kr.magicbox.subscribe.application.dto.command.HandleUserRevokedCommand;
 import kr.magicbox.subscribe.adapter.out.persistence.repository.SubscribeInboxRepository;
 import kr.magicbox.subscribe.application.port.in.HandleUserRevokedUseCase;
 import kr.magicbox.subscribe.domain.vo.SubscriberId;
-import kr.magicbox.subscribe.global.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
-import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -25,7 +23,7 @@ public class UserEventKafkaListener {
     private final SubscribeInboxRepository subscribeInboxRepository;
 
     @Idempotent
-    @RetryableTopic(dltStrategy = DltStrategy.FAIL_ON_ERROR, dltTopicSuffix = "-dlt", exclude = {BusinessException.class})
+    @RetryableTopic
     @KafkaListener(topics = "outbox.event.user-withdrawn", groupId = "subscribe-service")
     public void handleUserWithdrawnEvent(ConsumerRecord<String, UserWithdrawnEvent> consumerRecord) {
         UserWithdrawnEvent event = consumerRecord.value();
@@ -35,7 +33,7 @@ public class UserEventKafkaListener {
     }
 
     @Idempotent
-    @RetryableTopic(dltStrategy = DltStrategy.FAIL_ON_ERROR, dltTopicSuffix = "-dlt", exclude = {BusinessException.class})
+    @RetryableTopic
     @KafkaListener(topics = "outbox.event.user-banned", groupId = "subscribe-service")
     public void handleUserBannedEvent(ConsumerRecord<String, UserBannedEvent> consumerRecord) {
         UserBannedEvent event = consumerRecord.value();
