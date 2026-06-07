@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/subscription")
 @RequiredArgsConstructor
 public class SubscribeCommandController {
     private final SubscribeUseCase subscribeUseCase;
