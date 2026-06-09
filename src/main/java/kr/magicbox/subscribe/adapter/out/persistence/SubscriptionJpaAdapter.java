@@ -1,5 +1,6 @@
 package kr.magicbox.subscribe.adapter.out.persistence;
 
+import kr.magicbox.subscribe.adapter.out.persistence.entity.SubscriptionEntity;
 import kr.magicbox.subscribe.adapter.out.persistence.mapper.SubscriptionMapper;
 import kr.magicbox.subscribe.adapter.out.persistence.repository.SubscriptionJpaRepository;
 import kr.magicbox.subscribe.application.port.out.SubscriptionRepositoryPort;
@@ -9,6 +10,7 @@ import kr.magicbox.subscribe.domain.vo.CreatorId;
 import kr.magicbox.subscribe.domain.vo.SubscriberId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -48,6 +50,17 @@ public class SubscriptionJpaAdapter implements SubscriptionRepositoryPort {
     public List<Subscription> findAllBySubscriberId(SubscriberId subscriberId) {
         return subscriptionJpaRepository.findAllBySubscriberId(subscriberId.value())
                 .stream()
+                .map(subscriptionMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Subscription> findBySubscriberIdWithCursor(SubscriberId subscriberId, Long cursorId, int size) {
+        PageRequest pageRequest = PageRequest.of(0, size);
+        List<SubscriptionEntity> entities = cursorId == null
+                ? subscriptionJpaRepository.findAllBySubscriberIdOrderByIdDesc(subscriberId.value(), pageRequest)
+                : subscriptionJpaRepository.findAllBySubscriberIdAndIdLessThanOrderByIdDesc(subscriberId.value(), cursorId, pageRequest);
+        return entities.stream()
                 .map(subscriptionMapper::toDomain)
                 .toList();
     }
