@@ -24,4 +24,6 @@ public interface SubscriptionRepositoryPort {
     boolean existsBySubscriberIdAndCreatorId(SubscriberId subscriberId, CreatorId creatorId);
 
     long countByCreatorId(CreatorId creatorId);
+
+    List<Long> findCreatorIdsBySubscriberId(SubscriberId subscriberId);
 }

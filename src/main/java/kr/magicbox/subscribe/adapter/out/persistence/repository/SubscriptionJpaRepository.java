@@ -23,6 +23,9 @@ public interface SubscriptionJpaRepository extends JpaRepository<SubscriptionEnt
 
     void deleteBySubscriberIdAndCreatorId(Long subscriberId, Long creatorId);
 
+    @Query("SELECT s.creatorId FROM SubscriptionEntity s WHERE s.subscriberId = :subscriberId")
+    List<Long> findCreatorIdsBySubscriberId(@Param("subscriberId") Long subscriberId);
+
     @Modifying(clearAutomatically = true)
     @Query("delete from SubscriptionEntity s where s.subscriberId = :subscriberId")
     int deleteAllBySubscriberId(@Param("subscriberId") Long subscriberId);
