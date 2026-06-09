@@ -82,4 +82,9 @@ public class SubscriptionJpaAdapter implements SubscriptionRepositoryPort {
     public long countByCreatorId(CreatorId creatorId) {
         return subscriptionJpaRepository.countByCreatorId(creatorId.value());
     }
+
+    @Override
+    public List<Long> findCreatorIdsBySubscriberId(SubscriberId subscriberId) {
+        return subscriptionJpaRepository.findCreatorIdsBySubscriberId(subscriberId.value());
+    }
 }
