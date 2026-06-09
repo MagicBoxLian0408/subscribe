@@ -36,6 +36,7 @@ dependencies {
     implementation 'org.springframework.grpc:spring-grpc-server-spring-boot-starter'
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
     implementation 'org.springframework.boot:spring-boot-starter-kafka'
+    implementation 'com.google.protobuf:protobuf-java:4.34.0'
     runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
@@ -48,6 +49,10 @@ dependencyManagement {
     imports {
         mavenBom "org.springframework.grpc:spring-grpc-dependencies:$springGrpcVersion"
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+    }
+    dependencies {
+        dependency 'com.google.protobuf:protobuf-java:4.34.0'
+        dependency 'com.google.protobuf:protobuf-java-util:4.34.0'
     }
 }
 
