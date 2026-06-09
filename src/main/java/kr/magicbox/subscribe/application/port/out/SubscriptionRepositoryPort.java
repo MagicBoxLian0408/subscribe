@@ -17,6 +17,8 @@ public interface SubscriptionRepositoryPort {
 
     List<Subscription> findAllBySubscriberId(SubscriberId subscriberId);
 
+    List<Subscription> findBySubscriberIdWithCursor(SubscriberId subscriberId, Long cursorId, int size);
+
     List<Subscription> findAllByCreatorId(CreatorId creatorId);
 
     boolean existsBySubscriberIdAndCreatorId(SubscriberId subscriberId, CreatorId creatorId);

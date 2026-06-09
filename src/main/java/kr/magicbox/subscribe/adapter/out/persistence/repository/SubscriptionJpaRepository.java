@@ -15,6 +15,10 @@ public interface SubscriptionJpaRepository extends JpaRepository<SubscriptionEnt
 
     List<SubscriptionEntity> findAllBySubscriberId(Long subscriberId);
 
+    List<SubscriptionEntity> findAllBySubscriberIdAndIdLessThanOrderByIdDesc(Long subscriberId, Long cursorId, org.springframework.data.domain.Pageable pageable);
+
+    List<SubscriptionEntity> findAllBySubscriberIdOrderByIdDesc(Long subscriberId, org.springframework.data.domain.Pageable pageable);
+
     List<SubscriptionEntity> findAllByCreatorId(Long creatorId);
 
     void deleteBySubscriberIdAndCreatorId(Long subscriberId, Long creatorId);
