@@ -20,7 +20,7 @@ public class SubscribeOutboxAdapter implements SubscribeOutboxPort {
         String payload = objectMapper.writeValueAsString(event);
         subscribeOutboxRepository.save(SubscribeOutboxEntity.builder()
                 .eventType(event.eventType().getValue())
-                .key(event.key())
+                .eventKey(event.key())
                 .payload(payload)
                 .build());
     }

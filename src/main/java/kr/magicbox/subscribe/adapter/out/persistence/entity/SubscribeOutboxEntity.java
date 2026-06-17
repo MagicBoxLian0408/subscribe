@@ -18,15 +18,15 @@ public class SubscribeOutboxEntity extends BaseEntity {
     private String eventType;
 
     @Column(name = "event_key", nullable = false)
-    private String key;
+    private String eventKey;
 
     @Column(nullable = false, columnDefinition = "JSON")
     private String payload;
 
     @Builder
-    public SubscribeOutboxEntity(String eventType, String key, String payload) {
+    public SubscribeOutboxEntity(String eventType, String eventKey, String payload) {
         this.eventType = eventType;
-        this.key = key;
+        this.eventKey = eventKey;
         this.payload = payload;
     }
 }
