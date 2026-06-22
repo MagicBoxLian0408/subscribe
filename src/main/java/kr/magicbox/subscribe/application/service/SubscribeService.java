@@ -3,22 +3,27 @@ package kr.magicbox.subscribe.application.service;
 import kr.magicbox.subscribe.application.dto.command.SubscribeCommand;
 import kr.magicbox.subscribe.application.port.in.SubscribeUseCase;
 import kr.magicbox.subscribe.application.port.out.CreatorIdentityQueryPort;
+import kr.magicbox.subscribe.application.port.out.SubscribeOutboxPort;
 import kr.magicbox.subscribe.application.port.out.SubscriptionRepositoryPort;
 import kr.magicbox.subscribe.domain.aggregate.Subscription;
+import kr.magicbox.subscribe.domain.event.SubscriberCreatedEvent;
 import kr.magicbox.subscribe.domain.exception.AlreadySubscribedException;
 import kr.magicbox.subscribe.domain.exception.SelfSubscriptionNotAllowedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+
 @Service
 @RequiredArgsConstructor
 public class SubscribeService implements SubscribeUseCase {
     private final CreatorIdentityQueryPort creatorIdentityQueryPort;
     private final SubscriptionRepositoryPort subscriptionRepositoryPort;
+    private final SubscribeOutboxPort subscribeOutboxPort;
 
-    @Override
     @Transactional
+    @Override
     public void subscribe(SubscribeCommand command) {
         if (creatorIdentityQueryPort.isCreatorOwnedByUser(command.creatorId(), command.subscriberId()).join()) {
             throw new SelfSubscriptionNotAllowedException();
@@ -34,5 +39,10 @@ public class SubscribeService implements SubscribeUseCase {
                 .build();
 
         subscriptionRepositoryPort.save(subscription);
+        subscribeOutboxPort.save(SubscriberCreatedEvent.builder()
+                .creatorId(command.creatorId().value())
+                .subscriberId(command.subscriberId().value())
+                .occurredAt(Instant.now())
+                .build());
     }
 }
