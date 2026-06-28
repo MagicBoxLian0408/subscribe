@@ -31,11 +31,8 @@ public class IdempotentAspect {
     @Around("@annotation(kr.magicbox.subscribe.adapter.in.kafka.annotation.Idempotent)")
     public Object around(ProceedingJoinPoint pjp) {
         ConsumerRecord<String, ?> consumerRecord = extractRecord(pjp);
-
+        String key = consumerRecord.key();
         InboxEvent event = (InboxEvent) consumerRecord.value();
-        String key = consumerRecord.key() != null
-                ? consumerRecord.key()
-                : consumerRecord.topic() + "-" + consumerRecord.partition() + "-" + consumerRecord.offset();
         Instant occurredAt = event.occurredAt();
 
         if (isTooOld(occurredAt)) {
@@ -58,12 +55,12 @@ public class IdempotentAspect {
                 log.warn("[Inbox] 중복 메시지 폐기. key={}", key);
                 return null;
             }
-            SubscribeInboxEntity inbox = subscribeInboxRepository.save(SubscribeInboxEntity.builder()
+            subscribeInboxRepository.save(SubscribeInboxEntity.builder()
                     .key(key)
                     .topic(consumerRecord.topic())
                     .partition(consumerRecord.partition())
                     .offset(consumerRecord.offset())
-                    .status(SubscribeInboxStatus.PENDING)
+                    .status(SubscribeInboxStatus.PROCESSED)
                     .occurredAt(occurredAt)
                     .build());
             try {
@@ -72,7 +69,6 @@ public class IdempotentAspect {
                 status.setRollbackOnly();
                 throw new RuntimeException(e);
             }
-            inbox.markProcessed();
             return null;
         });
     }
